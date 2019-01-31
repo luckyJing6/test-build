@@ -1,7 +1,7 @@
 {
   "name": "test",
-  "version": "0.0.5",
-  "author": "",
+  "version": "v0.0.5",
+  "author": "GuoJing <1213407593@qq.com>",
   "description": "An electron-vue project",
   "license": null,
   "main": "./dist/electron/main.js",
