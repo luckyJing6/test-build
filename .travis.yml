@@ -31,3 +31,6 @@ script:
 branches:
   only:
   - master
+deploy:
+  provider: releases
+   
