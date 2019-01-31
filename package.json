@@ -51,11 +51,7 @@
       "icon": "build/icons/icon.ico"
     },
     "linux": {
-      "icon": "build/icons",
-      "target": [
-        "deb",
-        "AppImage"
-      ]
+      "icon": "build/icons"
     }
   },
   "dependencies": {
