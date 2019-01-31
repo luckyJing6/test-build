@@ -18,7 +18,7 @@
     "test": "npm run unit && npm run e2e",
     "unit": "karma start test/unit/karma.conf.js",
     "postinstall": "electron-builder install-app-deps",
-    "publish": "electron-builder --publish onTagOrDraft"
+    "publish": "electron-builder --publish always"
   },
   "build": {
     "productName": "test",
