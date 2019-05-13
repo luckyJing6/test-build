@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, ipcMain } from 'electron'
 
 /**
  * Set `__static` path to static files in production
@@ -13,7 +13,7 @@ const winURL = process.env.NODE_ENV === 'development'
   ? `http://localhost:9080`
   : `file://${__dirname}/index.html`
 
-function createWindow () {
+function createWindow() {
   /**
    * Initial window options
    */
@@ -27,6 +27,41 @@ function createWindow () {
 
   mainWindow.on('closed', () => {
     mainWindow = null
+  })
+
+  ipcMain.on('do', (event, deviceName) => {
+    const printers = mainWindow.webContents.getPrinters();
+    printers.forEach(element => {
+      if (element.name === deviceName) {
+        console.log(element);
+      }
+      if (element.name === deviceName && element.status != 0) {
+        mainWindow.send('print-error', deviceName + '打印机异常');
+        return;
+      }
+    });
+    mainWindow.webContents.print({ silent: true, printBackground: true, deviceName: deviceName },
+      (data) => {
+        console.log("回调", data);
+        event.sender.send('print-successs')
+      })
+  })
+  ipcMain.on('do2', (event, deviceName) => {
+    const printers = mainWindow.webContents.getPrinters();
+    printers.forEach(element => {
+      if (element.name === deviceName) {
+        console.log(element);
+      }
+      if (element.name === deviceName && element.status != 0) {
+        mainWindow.send('print-error', deviceName + '打印机异常');
+        return;
+      }
+    });
+    mainWindow.webContents.print({ silent: false, printBackground: true, deviceName: deviceName },
+      (data) => {
+        console.log("回调", data);
+        event.sender.send('print-successs')
+      })
   })
 }
 
