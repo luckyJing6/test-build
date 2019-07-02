@@ -1,7 +1,8 @@
 import { app, BrowserWindow, ipcMain } from 'electron'
 import viceWindowInit from './win2' // 副屏
 import viceWin3Init from './win3' // 副屏
-
+// require('./escpos')
+require('./serial')
 
 /**
  * Set `__static` path to static files in production

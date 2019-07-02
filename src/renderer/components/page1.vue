@@ -1,6 +1,7 @@
 <template>
   <div>
-    我是主页面page1
+    <input v-model="serail" placeholder=""></input>
+    <button @click="print">espos 串口打印666</button>
     <button @click="page2Default">page2打印页面,默认打印</button>
     <button @click="page2printShow">page2打印页面</button>
     <button @click="page3Default">page3打印页面,默认打印</button>
@@ -13,14 +14,23 @@ import { ipcRenderer } from 'electron'
 export default {
   data() {
     return {
-
+      logo: '',
+      serail: '',
+      pathLogo: ''
     }
   },
   created() {
-    ipcRenderer.send('open-vice-win')
-    ipcRenderer.send('open-vice-win3')
+    ipcRenderer.on('open-serial-cb', (event, res) => {
+      if(res.code === -1) {
+        alert(res.data)
+      }
+    })
+
   },
   methods: {
+    print() {
+      ipcRenderer.send('open-serial', {serail: this.serail})
+    },
     page2Default() {
       ipcRenderer.send('page2print-default')
     },
