@@ -1,6 +1,6 @@
 {
   "name": "test",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "author": "GuoJing <1213407593@qq.com>",
   "description": "An electron-vue project",
   "license": null,
@@ -60,12 +60,13 @@
     }
   },
   "dependencies": {
-    "vue": "^2.5.16",
     "axios": "^0.18.0",
+    "escpos": "^2.4.10",
+    "usb": "^1.6.0",
+    "vue": "^2.5.16",
     "vue-electron": "^1.0.6",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1",
-    "escpos": "^2.4.10",
     "vuex-electron": "^1.0.0"
   },
   "devDependencies": {

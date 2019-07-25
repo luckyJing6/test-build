@@ -1,4 +1,5 @@
 import { app, BrowserWindow, ipcMain } from 'electron'
+import application from './application'
 import viceWindowInit from './win2' // 副屏
 import viceWin3Init from './win3' // 副屏
 // require('./escpos')
@@ -43,14 +44,18 @@ function createWindow() {
   })
 
   mainWindow.loadURL(winURL)
+  application.mianWindow = mainWindow
 
   mainWindow.on('closed', () => {
     mainWindow = null
   })
+  require('./usb')
+  require('./download/apk')
+  require('./download/logo')
   // 副屏
   viceWindowInit(winURL, mainWindow)
   viceWin3Init(winURL, mainWindow)
-  
+
   ipcMain.on('do', (event, deviceName) => {
     const printers = mainWindow.webContents.getPrinters();
     printers.forEach(element => {
