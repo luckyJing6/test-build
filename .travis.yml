@@ -26,7 +26,6 @@ install:
 - npm install -g xvfb-maybe
 - yarn
 script:
-- yarn run rebuild
 - yarn run build
 - npm run publish
 branches:
