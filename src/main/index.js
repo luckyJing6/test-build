@@ -4,6 +4,7 @@ import viceWindowInit from './win2' // 副屏
 import viceWin3Init from './win3' // 副屏
 // require('./escpos')
 require('./serial')
+require('./db')
 
 /**
  * Set `__static` path to static files in production

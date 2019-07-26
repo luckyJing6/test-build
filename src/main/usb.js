@@ -1,7 +1,9 @@
 import { ipcMain } from 'electron'
+import sqlite3 from 'sqlite3'
 const usb = require('usb')
 const serail = require('serialport')
 console.log(serail)
+console.log('sqlite', sqlite3)
 
 ipcMain.on('get-usb-list', (event, data) => {
   var list = usb.getDeviceList()
@@ -9,7 +11,6 @@ ipcMain.on('get-usb-list', (event, data) => {
   event.sender.send('get-usb-list-cb', list)
 })
 
-ipcMain
 
 // - sudo apt-get install build-essential libudev-dev -y
 // 
