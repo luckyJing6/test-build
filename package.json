@@ -1,12 +1,12 @@
 {
   "name": "test",
-  "version": "0.1.6",
+  "version": "0.1.5",
   "author": "GuoJing <1213407593@qq.com>",
   "description": "An electron-vue project",
   "license": null,
   "main": "./dist/electron/main.js",
   "scripts": {
-    "rebuild": "./node_modules/.bin/electron-rebuild -runtime=electron --target=4.0.5 --abi=64",
+    "rebuild": "./node_modules/.bin/electron-rebuild -v 2.0.14 --abi=64",
     "build": "node .electron-vue/build.js && electron-builder",
     "build:dir": "node .electron-vue/build.js && electron-builder --dir",
     "build:clean": "cross-env BUILD_TARGET=clean node .electron-vue/build.js",
@@ -62,7 +62,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "escpos": "^2.4.10",
-    "usb": "^1.6.0",
+    "serialport": "^7.1.5",
     "vue": "^2.5.16",
     "vue-electron": "^1.0.6",
     "vue-router": "^3.0.1",
