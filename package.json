@@ -63,11 +63,11 @@
     "axios": "^0.18.0",
     "escpos": "^2.4.10",
     "serialport": "^7.1.5",
-    "usb": "^1.6.0",
     "vue": "^2.5.16",
     "vue-electron": "^1.0.6",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1",
+    "usb": "*",
     "vuex-electron": "^1.0.0"
   },
   "devDependencies": {
