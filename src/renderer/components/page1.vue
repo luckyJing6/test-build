@@ -3,10 +3,16 @@
     <img :src="logo" alt="" srcset="">
     <div>下载进度 {{isfinsh}}</div>
     <button @click="downTest">下载</button>
+    <button @click="usbTap">usb</button>
     <button @click="page2Default">page2打印页面,默认打印</button>
     <button @click="page2printShow">page2打印页面</button>
     <button @click="page3Default">page3打印页面,默认打印</button>
     <button @click="page3printShow">page3打印页面</button>
+    <div>
+      <div 
+        v-for="(item, index) in list" :key="index"
+      >{{item}}</div>
+    </div>
   </div>
 </template>
 
@@ -18,7 +24,8 @@ export default {
       logo: '',
       serail: '',
       pathLogo: '',
-      isfinsh: ''
+      isfinsh: '',
+      list: []
     }
   },
   created() {
@@ -38,6 +45,12 @@ export default {
 
   },
   methods: {
+    usbTap() {
+      ipcRenderer.send('get-usb-list')
+      ipcRenderer.once('get-usb-list-cb', (event, list) => {
+        this.list = list
+      })
+    },
     downTest() {
       ipcRenderer.send('copy-logo')
     },

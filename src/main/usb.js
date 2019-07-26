@@ -1,8 +1,16 @@
+import { ipcMain } from 'electron'
 const usb = require('usb')
-var list = usb.getDeviceList()
-console.log('sub list', list)
 const serail = require('serialport')
 console.log(serail)
+
+ipcMain.on('get-usb-list', (event, data) => {
+  var list = usb.getDeviceList()
+  console.log('sub list', list)
+  event.sender.send('get-usb-list-cb', list)
+})
+
+ipcMain
+
 // - sudo apt-get install build-essential libudev-dev -y
 // 
 
