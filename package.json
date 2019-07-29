@@ -6,6 +6,7 @@
   "license": null,
   "main": "./dist/electron/main.js",
   "scripts": {
+    "sqlite3": "npm install sqlite3 --runtime=electron --target=4.0.4 --dist-url=https://atom.io/download/electron",
     "rebuild": "./node_modules/.bin/electron-rebuild -v 4.0.4 --abi=69",
     "build": "node .electron-vue/build.js && electron-builder",
     "build:dir": "node .electron-vue/build.js && electron-builder --dir",
@@ -63,7 +64,6 @@
     "axios": "^0.18.0",
     "escpos": "^2.4.10",
     "usb": "^1.6.0",
-    "sqlite3": "4.0.6",
     "vue": "^2.5.16",
     "vue-electron": "^1.0.6",
     "vue-router": "^3.0.1",

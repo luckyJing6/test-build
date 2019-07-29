@@ -26,6 +26,7 @@ install:
 - npm install -g xvfb-maybe
 - yarn
 script:
+- yarn run sqlite3
 - yarn run rebuild
 - yarn run build
 - npm run publish
