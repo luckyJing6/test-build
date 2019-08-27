@@ -109,18 +109,21 @@ function createWindow() {
       }
     )
     winSerial.open(err => {
-      console.log('打开串口回调', err, new Date())
+      console.log('打开串口回调', err + '', new Date())
+      if(err) {
+        err = err + ''
+      }
       event.sender.send('serial-on-open', err)
     })
   })
   ipcMain.on('serial-open-light', () => {
     winSerial.write('16 4D 0D 53 43 4E 4C 45 44 31 2E', () => {
-      event.sender.send('serial-open-light-cb', err)
+      event.sender.send('serial-open-light-cb')
     })
   })
   ipcMain.on('serial-close-light', () => {
     winSerial.write('16 4D 0D 53 43 4E 4C 45 44 31 2E', () => {
-      event.sender.send('serial-close-light-cb', err)
+      event.sender.send('serial-close-light-cb')
     })
   })
 }

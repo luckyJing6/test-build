@@ -17,6 +17,10 @@
   <div>
     <div>
       <div>
+        <input v-model="port" placeholder="手动输入串口" type="text" />
+        <input v-model="baudRate" placeholder="手动输入波特率" type="text" />
+      </div>
+      <div>
         <span>
           <span>串口号</span>
           <select @change="comChange">
@@ -81,17 +85,18 @@ export default {
     }
   },
   created() {
-    ipcRenderer.on('serial-on-data', data => {
+    ipcRenderer.on('serial-on-data', (event, data) => {
       this.baudData = data
     })
     ipcRenderer.on('serial-on-close', () => {
       this.isOpen = false
     })
-    ipcRenderer.on('serial-on-open', err => {
+    ipcRenderer.on('serial-on-open', (event, err) => {
       if (!err) {
         this.isOpen = true
       } else {
-        alert(JSON.stringify(err) + '串口打开失败')
+        alert(err + '串口打开失败')
+        console.log(err)
       }
     })
   },
@@ -104,21 +109,17 @@ export default {
       })
     },
     openLight() {
-      if(!this.isOpen) return alert('请打开串口')
+      // if(!this.isOpen) return alert('请打开串口')
       ipcRenderer.send('serial-open-light')
-      ipcRenderer.once('serial-open-light-cb', err => {
-        if (!err) {
-          alert('打开照明灯数据写入成功')
-        }
+      ipcRenderer.once('serial-open-light-cb', (event, err) => {
+        alert('打开照明灯数据写入成功')
       })
     },
     closeLight() {
-      if(!this.isOpen) return alert('请打开串口')
+      // if(!this.isOpen) return alert('请打开串口')
       ipcRenderer.send('serial-close-light')
-      ipcRenderer.once('serial-close-light-cb', err => {
-        if (!err) {
-          alert('关闭照明灯数据写入成功')
-        }
+      ipcRenderer.once('serial-close-light-cb', (event, err) => {
+        alert('关闭照明灯数据写入成功')
       })
     },
     comChange(e) {
