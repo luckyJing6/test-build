@@ -35,7 +35,7 @@ const winURL = process.env.NODE_ENV === 'development'
 //   })
 // }
 // end
-let winSerial = null
+let serial = null
 function createWindow() {
   /**
    * Initial window options
@@ -95,35 +95,53 @@ function createWindow() {
         event.sender.send('print-successs')
       })
   })
-
+  var buf = Buffer.alloc(0)
   // 打开串口
-  ipcMain.on('openCom', (event, data) => {
-    winSerial = new Serial(
-      data.port,
-      data.baudRate,
-      data => {
-        event.sender.send('serial-on-data', data)
-      },
-      () => {
-        event.sender.send('serial-on-close')
+  ipcMain.on('serial-open', (event, data) => {
+    serial = new Serial(data.port, +data.baudRate)
+    serial.open(err => {
+      event.sender.send('serial-open-cb', err)
+      if (!err) {
+        console.log('serial open ok')
+        serial.onData(data => {
+          const totalLength = data.length + buf.length;
+          buf = Buffer.concat([buf, data], totalLength)
+          console.log(buf)
+          event.sender.send('serial-data-cb', buf)
+        })
       }
-    )
-    winSerial.open(err => {
-      console.log('打开串口回调', err + '', new Date())
-      if(err) {
-        err = err + ''
-      }
-      event.sender.send('serial-on-open', err)
     })
   })
+  // close
+  ipcMain.on('serial-close', (event, data) => {
+    serial.close(err => {
+      event.sender.send('serial-close-cb', err)
+      if (err) {
+        return console.log(err)
+      }
+      console.log('关闭串口')
+    })
+  })
+  // 打开灯
   ipcMain.on('serial-open-light', () => {
-    winSerial.write('16 4D 0D 53 43 4E 4C 45 44 31 2E', () => {
-      event.sender.send('serial-open-light-cb')
+    var data = Buffer.from('164D0D53434E4C4544312E', 'hex')
+    serial.write(data, err => {
+      event.sender.send('serial-open-light-cb', err)
+      if (err) {
+        return console.log(err)
+      }
+      console.log('open light write ok')
     })
   })
+  // 关闭灯
   ipcMain.on('serial-close-light', () => {
-    winSerial.write('16 4D 0D 53 43 4E 4C 45 44 31 2E', () => {
-      event.sender.send('serial-close-light-cb')
+    var data = Buffer.from('164D0D53434E4C4544302E', 'hex')
+    serial.write(data, err => {
+      event.sender.send('serial-close-light-cb', err)
+      if (err) {
+        return console.log(err)
+      }
+      console.log('close light write ok')
     })
   })
 }

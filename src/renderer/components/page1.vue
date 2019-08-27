@@ -37,12 +37,14 @@
         <span>当前选中波特率{{baudRate}}</span>
       </div>
     </div>
+    <div>串口是否已经打开：{{isOpen}}</div>
     <div>接收到串口返回数据为：{{baudData}}</div>
-    <div>{{isOpen}}</div>
     <div>
-      <button @click="openCom">打开串口</button>
+      <button @click="openSerial">打开串口</button>
+      <button @click="closeSerial">关闭串口</button>
       <button @click="openLight">开启照明灯</button>
       <button @click="closeLight">关闭照明灯</button>
+      <button @click="clearData">清空数据</button>
     </div>
   </div>
 </template>
@@ -75,7 +77,9 @@ export default {
         { text: '9600', value: '9600' },
         { text: '19200', value: '19200' },
         { text: '38400', value: '38400' },
-        { text: '115200', value: '115200' }
+        { text: '57600', value: '57600' },
+        { text: '115200', value: '115200' },
+        { text: '128000', value: '128000' }
       ],
       port: 'COM1',
       baudRate: '4800',
@@ -91,35 +95,55 @@ export default {
     ipcRenderer.on('serial-on-close', () => {
       this.isOpen = false
     })
-    ipcRenderer.on('serial-on-open', (event, err) => {
-      if (!err) {
-        this.isOpen = true
+    ipcRenderer.on('serial-open-cb', (event, err) => {
+      if (err) {
+        this.isOpen = false
+        alert(err)
       } else {
-        alert(err + '串口打开失败')
-        console.log(err)
+        this.isOpen = true
+      }
+    })
+    ipcRenderer.on('serial-close-cb', (event, err) => {
+      if (err) {
+        alert(err)
+      } else {
+        this.isOpen = false
       }
     })
   },
   methods: {
-    openCom() {
-      this.isOpen = false
-      ipcRenderer.send('openCom', {
+    clearData() {
+      this.baudData = ''
+    },
+    openSerial() {
+      ipcRenderer.send('serial-open', {
         port: this.port,
         baudRate: +this.baudRate
       })
+    },
+    closeSerial() {
+      ipcRenderer.send('serial-close')
     },
     openLight() {
       // if(!this.isOpen) return alert('请打开串口')
       ipcRenderer.send('serial-open-light')
       ipcRenderer.once('serial-open-light-cb', (event, err) => {
-        alert('打开照明灯数据写入成功')
+        if (err) {
+          alert(err)
+        } else {
+          alert('打开照明灯数据写入成功')
+        }
       })
     },
     closeLight() {
       // if(!this.isOpen) return alert('请打开串口')
       ipcRenderer.send('serial-close-light')
       ipcRenderer.once('serial-close-light-cb', (event, err) => {
-        alert('关闭照明灯数据写入成功')
+        if (err) {
+          alert(err)
+        } else {
+          alert('关闭照明灯数据写入成功')
+        }
       })
     },
     comChange(e) {
