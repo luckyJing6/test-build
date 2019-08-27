@@ -1,12 +1,12 @@
 {
   "name": "test",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "author": "GuoJing <1213407593@qq.com>",
   "description": "An electron-vue project",
   "license": null,
   "main": "./dist/electron/main.js",
   "scripts": {
-    "sqlite3": "npm install sqlite3 --runtime=electron --target=4.0.4 --dist-url=https://atom.io/download/electron",
+    "usb": "npm install usb --runtime=electron --target=4.0.4 --dist-url=https://atom.io/download/electron",
     "rebuild": "./node_modules/.bin/electron-rebuild -v 4.0.4 --abi=69",
     "build": "node .electron-vue/build.js && electron-builder",
     "build:dir": "node .electron-vue/build.js && electron-builder --dir",
@@ -63,6 +63,8 @@
   "dependencies": {
     "axios": "^0.18.0",
     "escpos": "^2.4.10",
+    "serialport": "^7.1.5",
+    "sqlite3": "^4.0.9",
     "usb": "^1.6.0",
     "vue": "^2.5.16",
     "vue-electron": "^1.0.6",
@@ -87,7 +89,7 @@
     "css-loader": "^0.28.11",
     "del": "^3.0.0",
     "devtron": "^1.4.0",
-    "electron": "4.0.4",
+    "electron": "4.1.0",
     "electron-debug": "3.0.1",
     "electron-devtools-installer": "^2.2.4",
     "electron-builder": "^20.19.2",

@@ -2,6 +2,7 @@ import { app, BrowserWindow, ipcMain } from 'electron'
 import application from './application'
 import viceWindowInit from './win2' // 副屏
 import viceWin3Init from './win3' // 副屏
+import Serial from './model/serial'
 // require('./escpos')
 require('./serial')
 require('./db')
@@ -34,7 +35,7 @@ const winURL = process.env.NODE_ENV === 'development'
 //   })
 // }
 // end
-
+let winSerial = null
 function createWindow() {
   /**
    * Initial window options
@@ -93,6 +94,34 @@ function createWindow() {
         console.log("回调", data);
         event.sender.send('print-successs')
       })
+  })
+
+  // 打开串口
+  ipcMain.on('openCom', (event, data) => {
+    winSerial = new Serial(
+      data.port,
+      data.baudRate,
+      data => {
+        event.sender.send('serial-on-data', data)
+      },
+      () => {
+        event.sender.send('serial-on-close')
+      }
+    )
+    winSerial.open(err => {
+      console.log('打开串口回调', err, new Date())
+      event.sender.send('serial-on-open', err)
+    })
+  })
+  ipcMain.on('serial-open-light', () => {
+    winSerial.write('16 4D 0D 53 43 4E 4C 45 44 31 2E', () => {
+      event.sender.send('serial-open-light-cb', err)
+    })
+  })
+  ipcMain.on('serial-close-light', () => {
+    winSerial.write('16 4D 0D 53 43 4E 4C 45 44 31 2E', () => {
+      event.sender.send('serial-close-light-cb', err)
+    })
   })
 }
 

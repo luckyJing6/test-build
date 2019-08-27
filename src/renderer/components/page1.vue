@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <!-- <div>
     <img :src="logo" alt="" srcset="">
     <div>下载进度 {{isfinsh}}</div>
     <button @click="downTest">下载</button>
@@ -13,11 +13,38 @@
         v-for="(item, index) in list" :key="index"
       >{{item}}</div>
     </div>
+  </div>-->
+  <div>
+    <div>
+      <div>
+        <span>
+          <span>串口号</span>
+          <select @change="comChange">
+            <option v-for="item in comList" :key="item.value" :value="item.value">{{item.text}}</option>
+          </select>
+        </span>
+        <span>
+          <span>波特率</span>
+          <select @change="baudChange">
+            <option v-for="item in baudRateList" :key="item.value" :value="item.value">{{item.text}}</option>
+          </select>
+        </span>
+        <span>当前选中串口号{{port}}</span>
+        <span>当前选中波特率{{baudRate}}</span>
+      </div>
+    </div>
+    <div>接收到串口返回数据为：{{baudData}}</div>
+    <div>{{isOpen}}</div>
+    <div>
+      <button @click="openCom">打开串口</button>
+      <button @click="openLight">开启照明灯</button>
+      <button @click="closeLight">关闭照明灯</button>
+    </div>
   </div>
 </template>
 
 <script>
-import { ipcRenderer } from 'electron'
+import { ipcRenderer, ipcMain } from 'electron'
 export default {
   data() {
     return {
@@ -25,26 +52,98 @@ export default {
       serail: '',
       pathLogo: '',
       isfinsh: '',
-      list: []
+      list: [],
+      comList: [
+        { text: 'COM1', value: 'COM1' },
+        { text: 'COM2', value: 'COM2' },
+        { text: 'COM3', value: 'COM3' },
+        { text: 'COM4', value: 'COM4' },
+        { text: 'COM5', value: 'COM5' },
+        { text: 'COM6', value: 'COM6' },
+        { text: 'COM7', value: 'COM7' },
+        { text: 'COM8', value: 'COM8' },
+        { text: 'COM9', value: 'COM9' },
+        { text: 'COM10', value: 'COM10' },
+        { text: 'COM11', value: 'COM11' }
+      ],
+      baudRateList: [
+        { text: '4800', value: '4800' },
+        { text: '9600', value: '9600' },
+        { text: '19200', value: '19200' },
+        { text: '38400', value: '38400' },
+        { text: '115200', value: '115200' }
+      ],
+      port: 'COM1',
+      baudRate: '4800',
+      baudData: '',
+      isOpen: false
+
     }
   },
   created() {
-    this.logo = 'static' + '/images/logo.png'
-    ipcRenderer.on('open-serial-cb', (event, res) => {
-      if (res.code === -1) {
-        alert(res.data)
+    ipcRenderer.on('serial-on-data', data => {
+      this.baudData = data
+    })
+    ipcRenderer.on('serial-on-close', () => {
+      this.isOpen = false
+    })
+    ipcRenderer.on('serial-on-open', err => {
+      if (!err) {
+        this.isOpen = true
+      } else {
+        alert(JSON.stringify(err) + '串口打开失败')
       }
     })
-    ipcRenderer.on('progress', (event, res) => {
-      this.isfinsh = '下载中----->' + res
-    })
-    ipcRenderer.on('finished', (event, res) => {
-      this.isfinsh = '下载完成----->' + res
-      this.downing = false
-    })
-
   },
   methods: {
+    openCom() {
+      this.isOpen = false
+      ipcRenderer.send('openCom', {
+        port: this.port,
+        baudRate: +this.baudRate
+      })
+    },
+    openLight() {
+      if(!this.isOpen) return alert('请打开串口')
+      ipcRenderer.send('serial-open-light')
+      ipcRenderer.once('serial-open-light-cb', err => {
+        if (!err) {
+          alert('打开照明灯数据写入成功')
+        }
+      })
+    },
+    closeLight() {
+      if(!this.isOpen) return alert('请打开串口')
+      ipcRenderer.send('serial-close-light')
+      ipcRenderer.once('serial-close-light-cb', err => {
+        if (!err) {
+          alert('关闭照明灯数据写入成功')
+        }
+      })
+    },
+    comChange(e) {
+      console.log(e.target.value)
+      this.port = e.target.value
+    },
+    baudChange(e) {
+      console.log(e.target.value)
+      this.baudRate = e.target.value
+    },
+    down() {
+      this.logo = 'static' + '/images/logo.png'
+      ipcRenderer.on('open-serial-cb', (event, res) => {
+        if (res.code === -1) {
+          alert(res.data)
+        }
+      })
+      ipcRenderer.on('progress', (event, res) => {
+        this.isfinsh = '下载中----->' + res
+      })
+      ipcRenderer.on('finished', (event, res) => {
+        this.isfinsh = '下载完成----->' + res
+        this.downing = false
+      })
+    },
     usbTap() {
       ipcRenderer.send('get-usb-list')
       ipcRenderer.once('get-usb-list-cb', (event, list) => {
