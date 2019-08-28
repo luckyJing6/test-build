@@ -123,18 +123,20 @@ function createWindow() {
     })
   })
   // 打开灯
-  ipcMain.on('serial-open-light', () => {
+  ipcMain.on('serial-open-light', (event) => {
+    console.log('open light', new Date())
     var data = Buffer.from('164D0D53434E4C4544312E', 'hex')
     serial.write(data, err => {
       event.sender.send('serial-open-light-cb', err)
       if (err) {
         return console.log(err)
       }
-      console.log('open light write ok')
+      console.log('open light write ok', new Date())
     })
   })
   // 关闭灯
-  ipcMain.on('serial-close-light', () => {
+  ipcMain.on('serial-close-light', (event) => {
+    console.log('close light', new Date())
     var data = Buffer.from('164D0D53434E4C4544302E', 'hex')
     serial.write(data, err => {
       event.sender.send('serial-close-light-cb', err)
