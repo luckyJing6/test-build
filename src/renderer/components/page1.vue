@@ -89,11 +89,8 @@ export default {
     }
   },
   created() {
-    ipcRenderer.on('serial-on-data', (event, data) => {
+    ipcRenderer.on('serial-data-cb', (event, data) => {
       this.baudData = data
-    })
-    ipcRenderer.on('serial-on-close', () => {
-      this.isOpen = false
     })
     ipcRenderer.on('serial-open-cb', (event, err) => {
       if (err) {

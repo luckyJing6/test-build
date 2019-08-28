@@ -124,6 +124,7 @@ function createWindow() {
   })
   // 打开灯
   ipcMain.on('serial-open-light', (event) => {
+    buf = Buffer.alloc(0)
     console.log('open light', new Date())
     var data = Buffer.from('164D0D53434E4C4544312E', 'hex')
     serial.write(data, err => {
@@ -136,6 +137,7 @@ function createWindow() {
   })
   // 关闭灯
   ipcMain.on('serial-close-light', (event) => {
+    buf = Buffer.alloc(0)
     console.log('close light', new Date())
     var data = Buffer.from('164D0D53434E4C4544302E', 'hex')
     serial.write(data, err => {
