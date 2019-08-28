@@ -90,6 +90,7 @@ export default {
   },
   created() {
     ipcRenderer.on('serial-data-cb', (event, data) => {
+      // alert('接收到数据了')
       this.baudData = data
     })
     ipcRenderer.on('serial-open-cb', (event, err) => {

@@ -106,8 +106,9 @@ function createWindow() {
         serial.onData(data => {
           const totalLength = data.length + buf.length;
           buf = Buffer.concat([buf, data], totalLength)
-          console.log(buf)
-          event.sender.send('serial-data-cb', buf)
+          let str = buf.toString('hex')
+          // buf.toString()
+          event.sender.send('serial-data-cb', str)
         })
       }
     })
