@@ -3,10 +3,11 @@ import application from './application'
 import viceWindowInit from './win2' // 副屏
 import viceWin3Init from './win3' // 副屏
 import Serial from './model/serial'
+import AppUpdate from './model/app-update'
 // require('./escpos')
 require('./serial')
 require('./db')
-
+const zippath = app.getPath('desktop') + '/zippath/'
 /**
  * Set `__static` path to static files in production
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
@@ -140,7 +141,7 @@ function createWindow() {
   ipcMain.on('serial-close-light', (event) => {
     buf = Buffer.alloc(0)
     console.log('close light', new Date())
-    var data = Buffer.from('164D0D53434E4C4544302E', 'hex')
+    var data = Buffer.from('164D0D5041505053542E164D0D53434E4C4544302E', 'hex')
     serial.write(data, err => {
       event.sender.send('serial-close-light-cb', err)
       if (err) {
@@ -149,6 +150,33 @@ function createWindow() {
       console.log('close light write ok')
     })
   })
+  // 发送指定数据
+  ipcMain.on('serail-write-data', (event, data) => {
+    data = data.replace(/\s*/g, "")
+    buf = Buffer.alloc(0)
+    var str = Buffer.from(data, 'hex')
+    serial.write(str, err => {
+      event.sender.send('serail-write-data-cb', err)
+      if (err) {
+        return console.log(err)
+      }
+      console.log('close light write ok')
+    })
+  })
+
+  ipcMain.on('run-cmd', async (event, data) => {
+    try {
+      await AppUpdate.install(data)
+      event.sender.send('run-cmd-cb')
+    } catch (error) {
+      event.sender.send('run-cmd-cb', error)
+    }
+  })
+  // 获取路径
+  ipcMain.on('get-path', (event, data) => {
+    event.sender.send('get-path-cb', zippath)
+  })
+
 }
 
 app.on('ready', createWindow)

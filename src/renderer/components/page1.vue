@@ -45,6 +45,16 @@
       <button @click="openLight">开启照明灯</button>
       <button @click="closeLight">关闭照明灯</button>
       <button @click="clearData">清空数据</button>
+      <button @click="sendData">发送数据</button>
+    </div>
+    <div>
+      <textarea placeholder="请输入发送数据" v-model="writeData" style="width: 60%" cols="30" rows="10"></textarea>
+    </div>
+    <div style="margin-top: 100px">
+      <div>以下为终端命令测试功能，串口测试请勿点击</div>
+      <input style="width: 60%" v-model="cmd" type="text">
+      <button @click="sendCmd" >进行终端指令测试</button>
+      <button @click="getPath">获取路径</button>
     </div>
   </div>
 </template>
@@ -84,7 +94,9 @@ export default {
       port: 'COM1',
       baudRate: '4800',
       baudData: '',
-      isOpen: false
+      writeData: '',
+      isOpen: false,
+      cmd: ''
 
     }
   },
@@ -110,6 +122,33 @@ export default {
     })
   },
   methods: {
+    getPath() {
+      ipcRenderer.send('get-path')
+      ipcRenderer.once('get-path-cb', (event, data) => {
+        this.cmd = data
+      })
+    },
+    sendCmd() {
+      console.log(this.cmd)
+      ipcRenderer.send('run-cmd', this.cmd)
+      ipcRenderer.once('run-cmd-cb', (event, err) => {
+        if (err) {
+          alert(err)
+        } else {
+          alert('测试指令执行成功')
+        }
+      })
+    },
+    sendData() {
+      ipcRenderer.send('serail-write-data', this.writeData)
+      ipcRenderer.once('serail-write-data-cb', (event, res) => {
+        if (err) {
+          alert(err)
+        } else {
+          alert('打开照明灯数据写入成功')
+        }
+      })
+    },
     clearData() {
       this.baudData = ''
     },
