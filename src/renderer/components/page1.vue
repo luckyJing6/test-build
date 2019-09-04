@@ -55,6 +55,7 @@
       <input style="width: 60%" v-model="cmd" type="text">
       <button @click="sendCmd" >进行终端指令测试</button>
       <button @click="getPath">获取路径</button>
+      <button @click="closeTap" >close</button>
     </div>
   </div>
 </template>
@@ -122,6 +123,9 @@ export default {
     })
   },
   methods: {
+    closeTap() {
+      ipcRenderer.send('close')
+    },
     getPath() {
       ipcRenderer.send('get-path')
       ipcRenderer.once('get-path-cb', (event, data) => {

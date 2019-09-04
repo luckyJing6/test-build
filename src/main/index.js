@@ -4,10 +4,12 @@ import viceWindowInit from './win2' // 副屏
 import viceWin3Init from './win3' // 副屏
 import Serial from './model/serial'
 import AppUpdate from './model/app-update'
+const fs = require('fs')
 // require('./escpos')
 require('./serial')
 require('./db')
 const zippath = app.getPath('desktop') + '/zippath/'
+const testPath = app.getPath('desktop') + '/ewsdb/test.json'
 /**
  * Set `__static` path to static files in production
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
@@ -41,12 +43,9 @@ function createWindow() {
   /**
    * Initial window options
    */
-  mainWindow = new BrowserWindow({
-    height: 563,
-    useContentSize: true,
-    title: 'page1',
-    width: 1000
-  })
+  const option = JSON.parse(fs.readFileSync(testPath))
+  console.log('test.json', option)
+  mainWindow = new BrowserWindow(option)
 
   mainWindow.loadURL(winURL)
   application.mianWindow = mainWindow
@@ -60,6 +59,10 @@ function createWindow() {
   // 副屏
   viceWindowInit(winURL, mainWindow)
   viceWin3Init(winURL, mainWindow)
+
+  ipcMain.on('close', (event) => {
+    app.quit()
+  })
 
   ipcMain.on('do', (event, deviceName) => {
     const printers = mainWindow.webContents.getPrinters();
